@@ -85,6 +85,7 @@ To compute the average daily activity pattern:
 **Observations:**
 
 - The peak at 0835 (red dashed line) indicates the interval of maximum activity on an average day
+- The maximum activity is 206.17 steps on average
 
 
 ## Imputing missing values

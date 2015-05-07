@@ -86,6 +86,7 @@ To compute the average daily activity pattern:
 **Observations:**
 
 - The peak at `r sprintf("%04d",xMax)` (red dashed line) indicates the interval of maximum activity on an average day
+- The maximum activity is `r sprintf("%3.2f", max(DF2$AvgSteps))` steps on average
 
 
 ## Imputing missing values
