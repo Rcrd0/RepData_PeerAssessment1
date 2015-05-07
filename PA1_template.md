@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 
@@ -18,13 +13,13 @@ The file *activity.zip* must be in the current directory
 4. DFValid dataframe is a subset of the original dataframe excluding the missing values for steps
   
   
-```{r results='hide'}
+
+```r
     DF <- read.csv(unz("activity.zip", "activity.csv")) 
     DF$datetime <- sprintf("%s %04d", DF$date, as.integer(DF$interval))
     DF$datetime <- as.POSIXct(DF$datetime, format = "%Y-%m-%d %H%M")
     DF$date <- as.Date(DF$date, format = "%Y-%m-%d")   
     DFValid <- DF[!is.na(DF$steps), ]
-    
 ```
 
 
@@ -40,19 +35,21 @@ To get the total number of steps taken per day:
 3. Draw a vertical line indicating the mean of the distribution
   
   
-```{r results='hide'}
+
+```r
     TotSteps <- tapply(DFValid$steps, DFValid$date, sum)    
     hist(TotSteps, col = "ivory", breaks = 15, xlim = c(0, 25000),
          main ="Histogram of steps taken per day",
          xlab ="Number of steps")    
     abline(v = mean(TotSteps), col = "red", lwd = 2)
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
 
 **Observations:**
 
-- On average, `r formatC(mean(TotSteps), format = "f", big.mark = ",", digits = 3)` steps are taken per day (vertical red line)
-- The median is equal to `r formatC(median(TotSteps), format = "f", big.mark = ",", digits = 3)` steps taken per day (very close to the mean)
+- On average, 10,766.189 steps are taken per day (vertical red line)
+- The median is equal to 10,765.000 steps taken per day (very close to the mean)
 
 
 
@@ -66,7 +63,8 @@ To compute the average daily activity pattern:
 4. When invoking xyplot, the panel function invokes the default and then draws a vertical line on xMax
   
   
-```{r results='hide',warning=FALSE}
+
+```r
     library(lattice)
     DF2 <- data.frame(AvgSteps = tapply(DFValid$steps, DFValid$interval, mean))
     DF2$Interval <- as.numeric(names(DF2[, ]))
@@ -80,12 +78,13 @@ To compute the average daily activity pattern:
                panel.xyplot(x, y, ...)
                panel.abline(v = xMax, col = rgb(1, 0, 0, 0.5), lty = 2)
            })
+```
 
-``` 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
 
 **Observations:**
 
-- The peak at `r sprintf("%04d",xMax)` (red dashed line) indicates the interval of maximum activity on an average day
+- The peak at 0835 (red dashed line) indicates the interval of maximum activity on an average day
 
 
 ## Imputing missing values
@@ -99,7 +98,8 @@ To estimate values for the missing values:
 6. Plot a vertical line to show the location of the mean
   
   
-```{r results='hide'}
+
+```r
     DF3 <- DF
     missing = which(is.na(DF3$steps))
     DF3$steps[missing] <- DF2[as.character(DF3$interval[missing]), 1]    
@@ -109,21 +109,23 @@ To estimate values for the missing values:
          xlab ="Number of steps")    
     abline(v = mean(TotSteps3), col = "red", lwd = 2, lty = "dashed")
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
   
   
 **Observations:**
 
-- On average, `r formatC(mean(TotSteps3), format = "f", big.mark = ",", digits = 3)` steps are taken per day (vertical red line)  
-- The median is equal to `r formatC(median(TotSteps3), format = "f", big.mark = ",", digits = 3)` steps taken per day (very close to the mean)  
+- On average, 10,766.189 steps are taken per day (vertical red line)  
+- The median is equal to 10,766.189 steps taken per day (very close to the mean)  
   
   
 Compared to the data without estimating missing values:
 
-- `r length(missing)` values where estimated
-- The total number of steps is much bigger (`r formatC(sum(TotSteps3), format = "f", big.mark = ",", digits = 0)`
- now vs. `r formatC(sum(TotSteps), format = "f", big.mark = ",", digits = 0)` before)
+- 2304 values where estimated
+- The total number of steps is much bigger (656,738
+ now vs. 570,608 before)
 - The median remains almost equal
-- The average is exactly the same (the difference of means is equal to `r mean(TotSteps) - mean(TotSteps3)`)
+- The average is exactly the same (the difference of means is equal to 0)
 
 
 
@@ -140,7 +142,8 @@ In order to plot the differences in activity patterns:
 5. The result is plotted with vertical lines for the maximum
   
   
-```{r results='hide'}
+
+```r
     # weekdays() retrieves a location dependent string "sáb" and "dom" (Spain) vs "Sat" and "Sun" (USA)
     DF3$Weekday <- weekdays(DF3$datetime) 
 
@@ -164,9 +167,9 @@ In order to plot the differences in activity patterns:
                panel.xyplot(x, y, ...)
                panel.abline(v = x[which(y == max(y))], col = rgb(1, 0, 0, 0.5), lty = 2)               
                 })
-
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
   
   
 **Observations:**
